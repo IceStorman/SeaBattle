@@ -8,15 +8,21 @@ namespace SeaBattle
 {
     public class InitialArrangement
     {
+        private static Random rnd = new Random();
+
         private static int numberOfCells = 10;
+        private static int countOfShips = 0;
 
         private static char wall = '#';
         private static char emptyCell = ' ';
+        private static char shootCell = '*';
+        private static char ship = '+';
 
-        public static char[,] FieldGenerating()
+        public static char[,] FieldGenerating(int numberOfShips)
         {
             char[,] field = new char[numberOfCells, numberOfCells];
             char cell = emptyCell;
+            countOfShips = 0;
 
             for(int i = 0; i < numberOfCells; i++)
             {
@@ -30,7 +36,7 @@ namespace SeaBattle
                     else if(i < numberOfCells - 1)
                     {
                         if (j == 0) cell = Convert.ToChar(i.ToString());
-                        else if (j < numberOfCells - 1) cell = emptyCell;
+                        else if (j < numberOfCells - 1) cell = ShipGeneration(numberOfShips);
                         else cell = wall;
                     }
                     else
@@ -44,7 +50,20 @@ namespace SeaBattle
             return field;
         }
 
-        public static void FieldDrawing(char[,] field)
+        private static char ShipGeneration(int numberOfShips)
+        {
+            int num = rnd.Next(0, 100);
+            char cell = emptyCell;
+
+            if(num <= 20 && countOfShips < numberOfShips)
+            {
+                cell = ship;
+                countOfShips++;
+            }
+            return cell;
+        }
+
+        public static void FieldDrawing(char[,] field, int playerX, int playerY)
         {
             char cell = emptyCell;
 
@@ -52,7 +71,9 @@ namespace SeaBattle
             {
                 for(int j = 0; j < numberOfCells; j++)
                 {
-                    cell = field[j, i];
+                    if (j == playerX && i == playerY) cell = shootCell;
+                    else cell = field[j, i];
+
                     Console.Write(cell);
                 }
                 Console.WriteLine();
