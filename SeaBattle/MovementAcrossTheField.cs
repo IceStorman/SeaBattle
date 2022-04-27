@@ -28,11 +28,8 @@ namespace SeaBattle
 
         public static (int, int) MoveLogic(int dx, int dy, int playerX, int playerY)
         {
-            int newX = playerX;
-            int newY = playerY;
-
-            newX += dx;
-            newY += dy;
+            int newX = playerX + dx;
+            int newY = playerY + dy;
 
             return (newX, newY);
         }

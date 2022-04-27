@@ -36,6 +36,9 @@ namespace SeaBattle
                 InitialArrangement.FieldDrawing(firstField, player1X, player1Y);
                 InitialArrangement.FieldDrawing(secondField, player2X, player2Y);
 
+                Console.WriteLine(numberOfPlayer1Ships);
+                Console.WriteLine(numberOfPlayer2Ships);
+
                 ConsoleKeyInfo key = Console.ReadKey();
 
                 (int dx, int dy) = MovementAcrossTheField.MovingInput(key);
@@ -58,31 +61,46 @@ namespace SeaBattle
                     {
                         (player2X, player2Y) = MovementAcrossTheField.Move(newX, newY);
                     }
-                    firstField[player2X, player2Y] = Shoot(key, secondField, player2X, player2Y);
+                    secondField[player2X, player2Y] = Shoot(key, secondField, player2X, player2Y);
                 }
 
                 Console.Clear();
             }
+            Console.WriteLine("Game ended");
 
             Console.ReadKey();
         }
 
         private static char Shoot(ConsoleKeyInfo key, char[,] field, int playerX, int playerY)
         {
-            char cell = emptyCell;
+            char cell = field[playerX, playerY];
+
             if (key.Key == shootKey)
             {
                 if (field[playerX, playerY] == ship)
                 {
                     cell = destroyedShip;
                 }
-                else
+                else if(field[playerX, playerY] == emptyCell)
                 {
                     cell = damagedCell;
                     isFirstPlayerTurn = !isFirstPlayerTurn;
                 }
             }
+
             return cell;
+        }
+
+        private static void CountOfShips(ConsoleKeyInfo key, char[,] field, int playerX, int playerY, int numberOfPlayerShips)
+        {
+            int num = numberOfPlayerShips;
+            if(key.Key == shootKey)
+            {
+                if (field[playerX, playerY] == ship)
+                {
+                    num--;
+                }
+            }
         }
 
         private static bool IsGameEnd()

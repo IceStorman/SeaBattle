@@ -15,7 +15,7 @@ namespace SeaBattle
 
         private static char wall = '#';
         private static char emptyCell = ' ';
-        private static char shootCell = '*';
+        private static char playerCell = '*';
         private static char ship = '+';
 
         public static char[,] FieldGenerating(int numberOfShips)
@@ -71,7 +71,7 @@ namespace SeaBattle
             {
                 for(int j = 0; j < numberOfCells; j++)
                 {
-                    if (j == playerX && i == playerY) cell = shootCell;
+                    if (j == playerX && i == playerY) cell = playerCell;
                     else cell = field[j, i];
 
                     Console.Write(cell);
