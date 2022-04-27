@@ -72,6 +72,7 @@ namespace SeaBattle
                 for(int j = 0; j < numberOfCells; j++)
                 {
                     if (j == playerX && i == playerY) cell = playerCell;
+                    else if (field[j, i] == ship) cell = emptyCell;
                     else cell = field[j, i];
 
                     Console.Write(cell);
