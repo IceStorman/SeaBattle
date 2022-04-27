@@ -55,7 +55,7 @@ namespace SeaBattle
             int num = rnd.Next(0, 100);
             char cell = emptyCell;
 
-            if(num <= 20 && countOfShips < numberOfShips)
+            if(num <= 25 && countOfShips < numberOfShips)
             {
                 cell = ship;
                 countOfShips++;

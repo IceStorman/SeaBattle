@@ -36,8 +36,8 @@ namespace SeaBattle
                 InitialArrangement.FieldDrawing(firstField, player1X, player1Y);
                 InitialArrangement.FieldDrawing(secondField, player2X, player2Y);
 
-                Console.WriteLine(numberOfPlayer1Ships);
-                Console.WriteLine(numberOfPlayer2Ships);
+                Console.WriteLine("Player1 ships: " + numberOfPlayer1Ships);
+                Console.WriteLine("Player2 ships: " + numberOfPlayer2Ships);
 
                 ConsoleKeyInfo key = Console.ReadKey();
 
@@ -45,6 +45,8 @@ namespace SeaBattle
 
                 if (isFirstPlayerTurn)
                 {
+                    numberOfPlayer1Ships = CountOfShips(key, firstField, player1X, player1Y, numberOfPlayer1Ships);
+
                     (int newX, int newY) = MovementAcrossTheField.MoveLogic(dx, dy, player1X, player1Y);
 
                     if (MovementAcrossTheField.CanMove(firstField, newX, newY))
@@ -55,6 +57,8 @@ namespace SeaBattle
                 }
                 else
                 {
+                    numberOfPlayer2Ships = CountOfShips(key, secondField, player2X, player2Y, numberOfPlayer2Ships);
+
                     (int newX, int newY) = MovementAcrossTheField.MoveLogic(dx, dy, player2X, player2Y);
 
                     if(MovementAcrossTheField.CanMove(secondField, newX, newY))
@@ -62,11 +66,11 @@ namespace SeaBattle
                         (player2X, player2Y) = MovementAcrossTheField.Move(newX, newY);
                     }
                     secondField[player2X, player2Y] = Shoot(key, secondField, player2X, player2Y);
-                }
+                }             
 
                 Console.Clear();
             }
-            Console.WriteLine("Game ended");
+            EndGameMessage();
 
             Console.ReadKey();
         }
@@ -91,7 +95,7 @@ namespace SeaBattle
             return cell;
         }
 
-        private static void CountOfShips(ConsoleKeyInfo key, char[,] field, int playerX, int playerY, int numberOfPlayerShips)
+        private static int CountOfShips(ConsoleKeyInfo key, char[,] field, int playerX, int playerY, int numberOfPlayerShips)
         {
             int num = numberOfPlayerShips;
             if(key.Key == shootKey)
@@ -101,12 +105,25 @@ namespace SeaBattle
                     num--;
                 }
             }
+            return num;
         }
 
         private static bool IsGameEnd()
         {
             if (numberOfPlayer1Ships <= 0 || numberOfPlayer2Ships <= 0) return true;
             return false;
+        }
+
+        private static void EndGameMessage()
+        {
+            if(numberOfPlayer1Ships <= 0)
+            {
+                Console.WriteLine("Player2 won!");
+            }
+            else
+            {
+                Console.WriteLine("Player1 won!");
+            }
         }
     }
 }
