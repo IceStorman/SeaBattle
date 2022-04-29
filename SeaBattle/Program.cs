@@ -1,43 +1,29 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SeaBattle
 {
     internal class Program
     {
-        private static ConsoleKey shootKey = ConsoleKey.Enter;
-
-        private static char damagedCell = '-';
-        private static char destroyedShip = '=';
-        private static char ship = '+';
-        private static char emptyCell = ' ';
-
-        public static int player1X = 1;
-        public static int player1Y = 1;
-        public static int player2X = 1;
-        public static int player2Y = 1;
-
-        private static int numberOfShips = 10;
-        private static int numberOfPlayer1Ships = numberOfShips;
-        private static int numberOfPlayer2Ships = numberOfShips;
+        private static Player player1;
+        private static Player player2;
 
         private static bool isFirstPlayerTurn = true;
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            char[,] firstField = InitialArrangement.FieldGenerating(numberOfPlayer1Ships);
-            char[,] secondField = InitialArrangement.FieldGenerating(numberOfPlayer2Ships);
+            player1 = SetStartParameters(player1);
+            player2 = SetStartParameters(player2);
 
-            while (!IsGameEnd())
+            player1.field = InitialArrangement.FieldGenerating(player1.numberOfShips);
+            player2.field = InitialArrangement.FieldGenerating(player2.numberOfShips);
+            
+            while (!EndGameLogic.IsGameEnd(player1.numberOfShips, player2.numberOfShips))
             {
-                InitialArrangement.FieldDrawing(firstField, player1X, player1Y);
-                InitialArrangement.FieldDrawing(secondField, player2X, player2Y);
+                InitialArrangement.FieldDrawing(player1.field, player1.xPos, player1.yPos);
+                InitialArrangement.FieldDrawing(player2.field, player2.xPos, player2.yPos);
 
-                Console.WriteLine("Player1 ships: " + numberOfPlayer1Ships);
-                Console.WriteLine("Player2 ships: " + numberOfPlayer2Ships);
+                Console.WriteLine("Player1 ships: " + player1.numberOfShips);
+                Console.WriteLine("Player2 ships: " + player2.numberOfShips);
 
                 ConsoleKeyInfo key = Console.ReadKey();
 
@@ -45,85 +31,43 @@ namespace SeaBattle
 
                 if (isFirstPlayerTurn)
                 {
-                    numberOfPlayer1Ships = CountOfShips(key, firstField, player1X, player1Y, numberOfPlayer1Ships);
-
-                    (int newX, int newY) = MovementAcrossTheField.MoveLogic(dx, dy, player1X, player1Y);
-
-                    if (MovementAcrossTheField.CanMove(firstField, newX, newY))
-                    {
-                        (player1X, player1Y) = MovementAcrossTheField.Move(newX, newY);
-                    }
-                    firstField[player1X, player1Y] = Shoot(key, firstField, player1X, player1Y);
+                    player1 = Move(player1, key, dx, dy);
                 }
                 else
                 {
-                    numberOfPlayer2Ships = CountOfShips(key, secondField, player2X, player2Y, numberOfPlayer2Ships);
-
-                    (int newX, int newY) = MovementAcrossTheField.MoveLogic(dx, dy, player2X, player2Y);
-
-                    if(MovementAcrossTheField.CanMove(secondField, newX, newY))
-                    {
-                        (player2X, player2Y) = MovementAcrossTheField.Move(newX, newY);
-                    }
-                    secondField[player2X, player2Y] = Shoot(key, secondField, player2X, player2Y);
+                    player2 = Move(player2, key, dx, dy);
                 }             
 
                 Console.Clear();
             }
-            EndGameMessage();
+            EndGameLogic.EndGameMessage(player1.numberOfShips, player2.numberOfShips);
 
             Console.ReadKey();
         }
 
-        private static char Shoot(ConsoleKeyInfo key, char[,] field, int playerX, int playerY)
+        private static Player SetStartParameters(Player player)
         {
-            char cell = field[playerX, playerY];
+            player.xPos = 1;
+            player.yPos = 1;
+            player.numberOfShips = 10;
 
-            if (key.Key == shootKey)
-            {
-                if (field[playerX, playerY] == ship)
-                {
-                    cell = destroyedShip;
-                }
-                else if(field[playerX, playerY] == emptyCell)
-                {
-                    cell = damagedCell;
-                    isFirstPlayerTurn = !isFirstPlayerTurn;
-                }
-            }
-
-            return cell;
+            return player;
         }
 
-        private static int CountOfShips(ConsoleKeyInfo key, char[,] field, int playerX, int playerY, int numberOfPlayerShips)
+        private static Player Move(Player player, ConsoleKeyInfo key, int dx, int dy)
         {
-            int num = numberOfPlayerShips;
-            if(key.Key == shootKey)
-            {
-                if (field[playerX, playerY] == ship)
-                {
-                    num--;
-                }
-            }
-            return num;
-        }
+            player.numberOfShips = ShootLogic.CountOfShips(key, player.field, player.xPos, player.yPos, player.numberOfShips);
 
-        private static bool IsGameEnd()
-        {
-            if (numberOfPlayer1Ships <= 0 || numberOfPlayer2Ships <= 0) return true;
-            return false;
-        }
+            (int newX, int newY) = MovementAcrossTheField.MoveLogic(dx, dy, player.xPos, player.yPos);
 
-        private static void EndGameMessage()
-        {
-            if(numberOfPlayer1Ships <= 0)
+            if (MovementAcrossTheField.CanMove(player.field, newX, newY))
             {
-                Console.WriteLine("Player2 won!");
+                (player.xPos, player.yPos) = MovementAcrossTheField.Move(newX, newY);
             }
-            else
-            {
-                Console.WriteLine("Player1 won!");
-            }
+
+            (player.field[player.xPos, player.yPos], isFirstPlayerTurn) = ShootLogic.Shoot(key, player.field, player.xPos, player.yPos, isFirstPlayerTurn);
+            
+            return player;
         }
     }
 }

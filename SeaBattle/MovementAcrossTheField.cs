@@ -1,18 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SeaBattle
 {
     public class MovementAcrossTheField
     {
-        private static char emptyCell = ' ';
-        private static char damagedCell = '-';
-        private static char destroyedShip = '=';
-        private static char ship = '+';
-
         public static (int, int) MovingInput(ConsoleKeyInfo key)
         {
             int dx = 0;
@@ -36,7 +27,7 @@ namespace SeaBattle
 
         public static bool CanMove(char[,] field, int newX, int newY)
         {
-            if(field[newX, newY] == emptyCell || field[newX, newY] == ship || field[newX, newY] == damagedCell || field[newX, newY] == destroyedShip)
+            if(field[newX, newY] == GameIcons.emptyCell || field[newX, newY] == GameIcons.ship || field[newX, newY] == GameIcons.damagedCell || field[newX, newY] == GameIcons.destroyedShip)
             {
                 return true;
             }

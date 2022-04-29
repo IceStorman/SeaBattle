@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SeaBattle
 {
@@ -13,15 +9,10 @@ namespace SeaBattle
         private static int numberOfCells = 10;
         private static int countOfShips = 0;
 
-        private static char wall = '#';
-        private static char emptyCell = ' ';
-        private static char playerCell = '*';
-        private static char ship = '+';
-
         public static char[,] FieldGenerating(int numberOfShips)
         {
             char[,] field = new char[numberOfCells, numberOfCells];
-            char cell = emptyCell;
+            char cell = GameIcons.emptyCell;
             countOfShips = 0;
 
             for(int i = 0; i < numberOfCells; i++)
@@ -31,17 +22,17 @@ namespace SeaBattle
                     if(i == 0)
                     {
                         if (j < numberOfCells - 1) cell = Convert.ToChar(j.ToString());
-                        else cell = wall;
+                        else cell = GameIcons.wall;
                     }
                     else if(i < numberOfCells - 1)
                     {
                         if (j == 0) cell = Convert.ToChar(i.ToString());
-                        else if (j < numberOfCells - 1) cell = ShipGeneration(numberOfShips);
-                        else cell = wall;
+                        else if (j < numberOfCells - 1) cell = SpawnShips(numberOfShips);
+                        else cell = GameIcons.wall;
                     }
                     else
                     {
-                        cell = wall;
+                        cell = GameIcons.wall;
                     }
 
                     field[j, i] = cell;
@@ -50,14 +41,14 @@ namespace SeaBattle
             return field;
         }
 
-        private static char ShipGeneration(int numberOfShips)
+        private static char SpawnShips(int numberOfShips)
         {
             int num = rnd.Next(0, 100);
-            char cell = emptyCell;
+            char cell = GameIcons.emptyCell;
 
             if(num <= 25 && countOfShips < numberOfShips)
             {
-                cell = ship;
+                cell = GameIcons.ship;
                 countOfShips++;
             }
             return cell;
@@ -65,14 +56,14 @@ namespace SeaBattle
 
         public static void FieldDrawing(char[,] field, int playerX, int playerY)
         {
-            char cell = emptyCell;
+            char cell = GameIcons.emptyCell;
 
             for(int i = 0; i < numberOfCells; i++)
             {
                 for(int j = 0; j < numberOfCells; j++)
                 {
-                    if (j == playerX && i == playerY) cell = playerCell;
-                    else if (field[j, i] == ship) cell = emptyCell;
+                    if (j == playerX && i == playerY) cell = GameIcons.playerCell;
+                    else if (field[j, i] == GameIcons.ship) cell = GameIcons.emptyCell;
                     else cell = field[j, i];
 
                     Console.Write(cell);
