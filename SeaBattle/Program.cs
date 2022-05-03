@@ -4,23 +4,23 @@ namespace SeaBattle
 {
     internal class Program
     {
-        private static Player player1;
-        private static Player player2;
+        private static Player player1 = new Player();
+        private static Player player2 = new Player();
 
         private static bool isFirstPlayerTurn = true;
 
         private static void Main(string[] args)
         {
-            player1 = SetStartParameters(player1);
-            player2 = SetStartParameters(player2);
+            SetStartParameters(player1);
+            SetStartParameters(player2);
 
-            player1.field = InitialArrangement.FieldGenerating(player1.numberOfShips);
-            player2.field = InitialArrangement.FieldGenerating(player2.numberOfShips);
+            InitialArrangement.FieldGenerating(player1);
+            InitialArrangement.FieldGenerating(player2);
             
             while (!EndGameLogic.IsGameEnd(player1.numberOfShips, player2.numberOfShips))
             {
-                InitialArrangement.FieldDrawing(player1.field, player1.xPos, player1.yPos);
-                InitialArrangement.FieldDrawing(player2.field, player2.xPos, player2.yPos);
+                InitialArrangement.FieldDrawing(player1);
+                InitialArrangement.FieldDrawing(player2);
 
                 Console.WriteLine("Player1 ships: " + player1.numberOfShips);
                 Console.WriteLine("Player2 ships: " + player2.numberOfShips);
@@ -31,12 +31,12 @@ namespace SeaBattle
 
                 if (isFirstPlayerTurn)
                 {
-                    player1 = Move(player1, key, dx, dy);
+                    Move(player1, key, dx, dy);
                 }
                 else
                 {
-                    player2 = Move(player2, key, dx, dy);
-                }             
+                    Move(player2, key, dx, dy);
+                }
 
                 Console.Clear();
             }
@@ -45,29 +45,25 @@ namespace SeaBattle
             Console.ReadKey();
         }
 
-        private static Player SetStartParameters(Player player)
+        private static void SetStartParameters(Player player)
         {
-            player.xPos = 1;
-            player.yPos = 1;
-            player.numberOfShips = 10;
-
-            return player;
+            player.SetXPos(1);
+            player.SetYPos(1);
+            player.SetNumberOfShips(10);
         }
 
-        private static Player Move(Player player, ConsoleKeyInfo key, int dx, int dy)
+        private static void Move(Player player, ConsoleKeyInfo key, int dx, int dy)
         {
-            player.numberOfShips = ShootLogic.CountOfShips(key, player.field, player.xPos, player.yPos, player.numberOfShips);
+            ShootLogic.CountOfShips(key, player);
 
-            (int newX, int newY) = MovementAcrossTheField.MoveLogic(dx, dy, player.xPos, player.yPos);
+            (int newX, int newY) = MovementAcrossTheField.MoveLogic(dx, dy, player);
 
             if (MovementAcrossTheField.CanMove(player.field, newX, newY))
             {
                 (player.xPos, player.yPos) = MovementAcrossTheField.Move(newX, newY);
             }
 
-            (player.field[player.xPos, player.yPos], isFirstPlayerTurn) = ShootLogic.Shoot(key, player.field, player.xPos, player.yPos, isFirstPlayerTurn);
-            
-            return player;
+            (player.field[player.xPos, player.yPos], isFirstPlayerTurn) = ShootLogic.Shoot(key, player, isFirstPlayerTurn);
         }
     }
 }

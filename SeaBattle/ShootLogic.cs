@@ -6,17 +6,17 @@ namespace SeaBattle
     {
         private static ConsoleKey shootKey = ConsoleKey.Enter;
 
-        public static (char, bool) Shoot(ConsoleKeyInfo key, char[,] field, int playerX, int playerY, bool isFirstPlayerTurn)
+        public static (char, bool) Shoot(ConsoleKeyInfo key, Player player, bool isFirstPlayerTurn)
         {
-            char cell = field[playerX, playerY];
+            char cell = player.field[player.xPos, player.yPos];
 
             if (key.Key == shootKey)
             {
-                if (field[playerX, playerY] == GameIcons.ship)
+                if (cell == GameIcons.ship)
                 {
                     cell = GameIcons.destroyedShip;
                 }
-                else if (field[playerX, playerY] == GameIcons.emptyCell)
+                else if (cell == GameIcons.emptyCell)
                 {
                     cell = GameIcons.damagedCell;
                     isFirstPlayerTurn = !isFirstPlayerTurn;
@@ -26,17 +26,17 @@ namespace SeaBattle
             return (cell, isFirstPlayerTurn);
         }
 
-        public static int CountOfShips(ConsoleKeyInfo key, char[,] field, int playerX, int playerY, int numberOfPlayerShips)
+        public static void CountOfShips(ConsoleKeyInfo key, Player player)
         {
-            int num = numberOfPlayerShips;
+            int num = player.numberOfShips;
             if (key.Key == shootKey)
             {
-                if (field[playerX, playerY] == GameIcons.ship)
+                if (player.field[player.xPos, player.yPos] == GameIcons.ship)
                 {
                     num--;
                 }
             }
-            return num;
+            player.SetNumberOfShips(num);
         }
     }
 }

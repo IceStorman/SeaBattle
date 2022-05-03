@@ -17,10 +17,10 @@ namespace SeaBattle
             return (dx, dy);
         }
 
-        public static (int, int) MoveLogic(int dx, int dy, int playerX, int playerY)
+        public static (int, int) MoveLogic(int dx, int dy, Player player)
         {
-            int newX = playerX + dx;
-            int newY = playerY + dy;
+            int newX = player.xPos + dx;
+            int newY = player.yPos + dy;
 
             return (newX, newY);
         }

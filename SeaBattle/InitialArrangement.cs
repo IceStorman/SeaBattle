@@ -9,7 +9,7 @@ namespace SeaBattle
         private static int numberOfCells = 10;
         private static int countOfShips = 0;
 
-        public static char[,] FieldGenerating(int numberOfShips)
+        public static void FieldGenerating(Player player)
         {
             char[,] field = new char[numberOfCells, numberOfCells];
             char cell = GameIcons.emptyCell;
@@ -27,7 +27,7 @@ namespace SeaBattle
                     else if(i < numberOfCells - 1)
                     {
                         if (j == 0) cell = Convert.ToChar(i.ToString());
-                        else if (j < numberOfCells - 1) cell = SpawnShips(numberOfShips);
+                        else if (j < numberOfCells - 1) cell = SpawnShips(player.numberOfShips);
                         else cell = GameIcons.wall;
                     }
                     else
@@ -38,7 +38,7 @@ namespace SeaBattle
                     field[j, i] = cell;
                 }
             }
-            return field;
+            player.SetField(field);
         }
 
         private static char SpawnShips(int numberOfShips)
@@ -54,7 +54,7 @@ namespace SeaBattle
             return cell;
         }
 
-        public static void FieldDrawing(char[,] field, int playerX, int playerY)
+        public static void FieldDrawing(Player player)
         {
             char cell = GameIcons.emptyCell;
 
@@ -62,9 +62,9 @@ namespace SeaBattle
             {
                 for(int j = 0; j < numberOfCells; j++)
                 {
-                    if (j == playerX && i == playerY) cell = GameIcons.playerCell;
-                    else if (field[j, i] == GameIcons.ship) cell = GameIcons.emptyCell;
-                    else cell = field[j, i];
+                    if (j == player.xPos && i == player.yPos) cell = GameIcons.playerCell;
+                    else if (player.field[j, i] == GameIcons.ship) cell = GameIcons.emptyCell;
+                    else cell = player.field[j, i];
 
                     Console.Write(cell);
                 }
