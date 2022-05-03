@@ -60,7 +60,7 @@ namespace SeaBattle
 
             if (MovementAcrossTheField.CanMove(player.field, newX, newY))
             {
-                (player.xPos, player.yPos) = MovementAcrossTheField.Move(newX, newY);
+                MovementAcrossTheField.Move(player, newX, newY);
             }
 
             (player.field[player.xPos, player.yPos], isFirstPlayerTurn) = ShootLogic.Shoot(key, player, isFirstPlayerTurn);

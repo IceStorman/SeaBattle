@@ -34,12 +34,10 @@ namespace SeaBattle
             return false;
         }
 
-        public static (int, int) Move(int newX, int newY)
+        public static void Move(Player player, int newX, int newY)
         {
-            int playerX = newX;
-            int playerY = newY;
-
-            return (playerX, playerY);
+            player.SetXPos(newX);
+            player.SetYPos(newY);
         }
     }
 }
