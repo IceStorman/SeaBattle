@@ -4,13 +4,11 @@ namespace SeaBattle
 {
     internal class Program
     {
-        private static Player player1 = new Player();
-        private static Player player2 = new Player();
-
-        private static bool isFirstPlayerTurn = true;
-
         private static void Main(string[] args)
         {
+            Player player1 = new Player();
+            Player player2 = new Player();
+
             SetStartParameters(player1);
             SetStartParameters(player2);
 
@@ -29,13 +27,13 @@ namespace SeaBattle
 
                 (int dx, int dy) = MovementAcrossTheField.MovingInput(key);
 
-                if (isFirstPlayerTurn)
+                if (player1.isPlayerTurn)
                 {
-                    Move(player1, key, dx, dy);
+                    Move(player1, player2, key, dx, dy);
                 }
-                else
+                else if(player2.isPlayerTurn)
                 {
-                    Move(player2, key, dx, dy);
+                    Move(player2, player1, key, dx, dy);
                 }
 
                 Console.Clear();
@@ -49,21 +47,20 @@ namespace SeaBattle
         {
             player.SetXPos(1);
             player.SetYPos(1);
-            player.SetNumberOfShips(10);
         }
 
-        private static void Move(Player player, ConsoleKeyInfo key, int dx, int dy)
+        private static void Move(Player currentPlayer, Player otherPlayer, ConsoleKeyInfo key, int dx, int dy)
         {
-            ShootLogic.CountOfShips(key, player);
+            ShootLogic.CountOfShips(key, currentPlayer);
 
-            (int newX, int newY) = MovementAcrossTheField.MoveLogic(dx, dy, player);
+            (int newX, int newY) = MovementAcrossTheField.MoveLogic(dx, dy, currentPlayer);
 
-            if (MovementAcrossTheField.CanMove(player.field, newX, newY))
+            if (MovementAcrossTheField.CanMove(currentPlayer.field, newX, newY))
             {
-                MovementAcrossTheField.Move(player, newX, newY);
+                MovementAcrossTheField.Move(currentPlayer, newX, newY);
             }
 
-            (player.field[player.xPos, player.yPos], isFirstPlayerTurn) = ShootLogic.Shoot(key, player, isFirstPlayerTurn);
+            currentPlayer.field[currentPlayer.xPos, currentPlayer.yPos] = ShootLogic.Shoot(key, currentPlayer, otherPlayer);
         }
     }
 }

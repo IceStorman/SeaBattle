@@ -49,5 +49,17 @@
         {
             return numberOfShips;
         }
+
+        public bool isPlayerTurn = true;
+
+        public void SetIsPlayerTurn(bool isPlayerTurn)
+        {
+            this.isPlayerTurn = isPlayerTurn;
+        }
+
+        public bool GetIsPlayerTurn()
+        {
+            return isPlayerTurn;
+        }
     }
 }

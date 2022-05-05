@@ -4,16 +4,15 @@ namespace SeaBattle
 {
     public class InitialArrangement
     {
-        private static Random rnd = new Random();
-
-        private static int numberOfCells = 10;
-        private static int countOfShips = 0;
+        private const int numberOfCells = 10;
+        private const int numberOfShips = 10;
 
         public static void FieldGenerating(Player player)
         {
+            Random rnd = new Random();
+
             char[,] field = new char[numberOfCells, numberOfCells];
             char cell = GameIcons.emptyCell;
-            countOfShips = 0;
 
             for(int i = 0; i < numberOfCells; i++)
             {
@@ -27,7 +26,7 @@ namespace SeaBattle
                     else if(i < numberOfCells - 1)
                     {
                         if (j == 0) cell = Convert.ToChar(i.ToString());
-                        else if (j < numberOfCells - 1) cell = SpawnShips(player.numberOfShips);
+                        else if (j < numberOfCells - 1) cell = SpawnShips(player, rnd);
                         else cell = GameIcons.wall;
                     }
                     else
@@ -41,15 +40,16 @@ namespace SeaBattle
             player.SetField(field);
         }
 
-        private static char SpawnShips(int numberOfShips)
+        private static char SpawnShips(Player player, Random rnd)
         {
-            int num = rnd.Next(0, 100);
+            int num = rnd.Next(0, 4);
+
             char cell = GameIcons.emptyCell;
 
-            if(num <= 25 && countOfShips < numberOfShips)
+            if(num <= 0 && player.numberOfShips < numberOfShips)
             {
                 cell = GameIcons.ship;
-                countOfShips++;
+                player.numberOfShips++;
             }
             return cell;
         }

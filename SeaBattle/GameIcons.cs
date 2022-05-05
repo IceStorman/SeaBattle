@@ -1,6 +1,6 @@
 ﻿namespace SeaBattle
 {
-    internal class GameIcons
+    public class GameIcons
     {
         public static char damagedCell = '-';
         public static char destroyedShip = '=';

@@ -4,26 +4,28 @@ namespace SeaBattle
 {
     public class ShootLogic
     {
-        private static ConsoleKey shootKey = ConsoleKey.Enter;
+        private const ConsoleKey shootKey = ConsoleKey.Enter;
 
-        public static (char, bool) Shoot(ConsoleKeyInfo key, Player player, bool isFirstPlayerTurn)
+        public static char Shoot(ConsoleKeyInfo key, Player currentPlayer, Player otherPlayer)
         {
-            char cell = player.field[player.xPos, player.yPos];
+            char cell = currentPlayer.field[currentPlayer.xPos, currentPlayer.yPos];
 
             if (key.Key == shootKey)
             {
                 if (cell == GameIcons.ship)
                 {
                     cell = GameIcons.destroyedShip;
+                    currentPlayer.SetIsPlayerTurn(true);
                 }
                 else if (cell == GameIcons.emptyCell)
                 {
                     cell = GameIcons.damagedCell;
-                    isFirstPlayerTurn = !isFirstPlayerTurn;
+                    currentPlayer.SetIsPlayerTurn(false);
+                    otherPlayer.SetIsPlayerTurn(true);
                 }
             }
 
-            return (cell, isFirstPlayerTurn);
+            return cell;
         }
 
         public static void CountOfShips(ConsoleKeyInfo key, Player player)
