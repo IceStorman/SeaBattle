@@ -12,7 +12,7 @@ namespace SeaBattle
             Random rnd = new Random();
 
             char[,] field = new char[numberOfCells, numberOfCells];
-            char cell = GameIcons.emptyCell;
+            char cell = (char)GameIcons.Icons.emptyCell;
 
             for(int i = 0; i < numberOfCells; i++)
             {
@@ -21,17 +21,17 @@ namespace SeaBattle
                     if(i == 0)
                     {
                         if (j < numberOfCells - 1) cell = Convert.ToChar(j.ToString());
-                        else cell = GameIcons.wall;
+                        else cell = (char)GameIcons.Icons.wall;
                     }
                     else if(i < numberOfCells - 1)
                     {
                         if (j == 0) cell = Convert.ToChar(i.ToString());
                         else if (j < numberOfCells - 1) cell = SpawnShips(player, rnd);
-                        else cell = GameIcons.wall;
+                        else cell = (char)GameIcons.Icons.wall;
                     }
                     else
                     {
-                        cell = GameIcons.wall;
+                        cell = (char)GameIcons.Icons.wall;
                     }
 
                     field[j, i] = cell;
@@ -44,11 +44,11 @@ namespace SeaBattle
         {
             int num = rnd.Next(0, 4);
 
-            char cell = GameIcons.emptyCell;
+            char cell = (char)GameIcons.Icons.emptyCell;
 
             if(num <= 0 && player.numberOfShips < numberOfShips)
             {
-                cell = GameIcons.ship;
+                cell = (char)GameIcons.Icons.ship;
                 player.numberOfShips++;
             }
             return cell;
@@ -56,14 +56,14 @@ namespace SeaBattle
 
         public static void FieldDrawing(Player player)
         {
-            char cell = GameIcons.emptyCell;
+            char cell = (char)GameIcons.Icons.emptyCell;
 
             for(int i = 0; i < numberOfCells; i++)
             {
                 for(int j = 0; j < numberOfCells; j++)
                 {
-                    if (j == player.xPos && i == player.yPos) cell = GameIcons.playerCell;
-                    else if (player.field[j, i] == GameIcons.ship) cell = GameIcons.emptyCell;
+                    if (j == player.xPos && i == player.yPos) cell = (char)GameIcons.Icons.playerCell;
+                    else if (player.field[j, i] == (char)GameIcons.Icons.ship) cell = (char)GameIcons.Icons.emptyCell;
                     else cell = player.field[j, i];
 
                     Console.Write(cell);

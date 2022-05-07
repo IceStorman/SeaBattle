@@ -12,14 +12,14 @@ namespace SeaBattle
 
             if (key.Key == shootKey)
             {
-                if (cell == GameIcons.ship)
+                if (cell == (char)GameIcons.Icons.ship)
                 {
-                    cell = GameIcons.destroyedShip;
+                    cell = (char)GameIcons.Icons.destroyedShip;
                     currentPlayer.SetIsPlayerTurn(true);
                 }
-                else if (cell == GameIcons.emptyCell)
+                else if (cell == (char)GameIcons.Icons.emptyCell)
                 {
-                    cell = GameIcons.damagedCell;
+                    cell = (char)GameIcons.Icons.damagedCell;
                     currentPlayer.SetIsPlayerTurn(false);
                     otherPlayer.SetIsPlayerTurn(true);
                 }
@@ -33,7 +33,7 @@ namespace SeaBattle
             int num = player.numberOfShips;
             if (key.Key == shootKey)
             {
-                if (player.field[player.xPos, player.yPos] == GameIcons.ship)
+                if (player.field[player.xPos, player.yPos] == (char)GameIcons.Icons.ship)
                 {
                     num--;
                 }

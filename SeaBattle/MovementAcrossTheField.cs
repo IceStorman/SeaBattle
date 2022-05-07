@@ -27,7 +27,7 @@ namespace SeaBattle
 
         public static bool CanMove(char[,] field, int newX, int newY)
         {
-            if(field[newX, newY] == GameIcons.emptyCell || field[newX, newY] == GameIcons.ship || field[newX, newY] == GameIcons.damagedCell || field[newX, newY] == GameIcons.destroyedShip)
+            if(field[newX, newY] == (char)GameIcons.Icons.emptyCell || field[newX, newY] == (char)GameIcons.Icons.ship || field[newX, newY] == (char)GameIcons.Icons.damagedCell || field[newX, newY] == (char)GameIcons.Icons.destroyedShip)
             {
                 return true;
             }
