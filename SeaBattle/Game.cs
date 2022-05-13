@@ -10,24 +10,21 @@ namespace SeaBattle
         private const int numberOfCellsOnAllField = numberOfCells + 2;
         private const int maxNumberOfShips = 10;
 
-        public void Play()
+        public void StartRound(Player player1, Player player2)
         {
-            Player player1 = new Player();
-            Player player2 = new Player();
-
             SetStartParameters(player1);
             SetStartParameters(player2);
 
             FieldGenerating(player1);
             FieldGenerating(player2);
 
-            while (!IsGameEnd(player1.numberOfShips, player2.numberOfShips))
+            while (!IsRoundEnd(player1, player2))
             {
                 FieldDrawing(player1);
                 FieldDrawing(player2);
 
-                Console.WriteLine("Player1 ships: " + player1.numberOfShips);
-                Console.WriteLine("Player2 ships: " + player2.numberOfShips);
+                Console.WriteLine($"{player1.name} ships: {player1.numberOfShips}");
+                Console.WriteLine($"{player2.name} ships: {player2.numberOfShips}");
 
                 ConsoleKeyInfo key = Console.ReadKey();
 
@@ -44,15 +41,17 @@ namespace SeaBattle
 
                 Console.Clear();
             }
-            EndGameMessage(player1.numberOfShips, player2.numberOfShips);
+            EndRoundLogic(player1, player2);
 
             Console.ReadKey();
+            Console.Clear();
         }
 
         private void SetStartParameters(Player player)
         {
             player.xPos = 1;
             player.yPos = 1;
+            player.numberOfShips = 0;
         }
 
         private void FieldGenerating(Player player)
@@ -65,14 +64,14 @@ namespace SeaBattle
             {
                 for (int j = 0; j < numberOfCellsOnAllField; j++)
                 {
-                    char cell = (char)GameIcons.Icons.emptyCell;
+                    char cell = (char)GameIcons.emptyCell;
 
                     if (i == 0)
                     {
                         if (j < numberOfCellsOnAllField - 1) 
                             cell = Convert.ToChar(j.ToString());
                         else 
-                            cell = (char)GameIcons.Icons.wall;
+                            cell = (char)GameIcons.wall;
                     }
                     else if (i < numberOfCellsOnAllField - 1)
                     {
@@ -81,11 +80,11 @@ namespace SeaBattle
                         else if (j < numberOfCellsOnAllField - 1) 
                             cell = SpawnShips(player, rnd);
                         else 
-                            cell = (char)GameIcons.Icons.wall;
+                            cell = (char)GameIcons.wall;
                     }
                     else
                     {
-                        cell = (char)GameIcons.Icons.wall;
+                        cell = (char)GameIcons.wall;
                     }
 
                     field[j, i] = cell;
@@ -98,11 +97,11 @@ namespace SeaBattle
         {
             int num = rnd.Next(0, 4);
 
-            char cell = (char)GameIcons.Icons.emptyCell;
+            char cell = (char)GameIcons.emptyCell;
 
-            if (num <= 0 && player.numberOfShips < maxNumberOfShips)
+            if (num == 0 && player.numberOfShips < maxNumberOfShips)
             {
-                cell = (char)GameIcons.Icons.ship;
+                cell = (char)GameIcons.ship;
                 player.numberOfShips++;
             }
             return cell;
@@ -110,16 +109,18 @@ namespace SeaBattle
 
         private void FieldDrawing(Player player)
         {
+            Console.WriteLine(player.name);
+
             for (int i = 0; i < numberOfCellsOnAllField; i++)
             {
                 for (int j = 0; j < numberOfCellsOnAllField; j++)
                 {
-                    char cell = (char)GameIcons.Icons.emptyCell;
+                    char cell = (char)GameIcons.emptyCell;
 
                     if (j == player.xPos && i == player.yPos) 
-                        cell = (char)GameIcons.Icons.playerCell;
-                    else if (player.field[j, i] == (char)GameIcons.Icons.ship) 
-                        cell = (char)GameIcons.Icons.emptyCell;
+                        cell = (char)GameIcons.playerCell;
+                    else if (player.field[j, i] == (char)GameIcons.ship) 
+                        cell = (char)GameIcons.ship;
                     else 
                         cell = player.field[j, i];
 
@@ -135,7 +136,7 @@ namespace SeaBattle
 
             (int newX, int newY) = MoveLogic(dx, dy, currentPlayer);
 
-            if (CanMove(currentPlayer.field, newX, newY))
+            if (CanMove(currentPlayer.field[newX, newY]))
             {
                 Move(currentPlayer, newX, newY);
             }
@@ -149,14 +150,14 @@ namespace SeaBattle
 
             if (key.Key == shootKey)
             {
-                if (cell == (char)GameIcons.Icons.ship)
+                if (cell == (char)GameIcons.ship)
                 {
-                    cell = (char)GameIcons.Icons.destroyedShip;
+                    cell = (char)GameIcons.destroyedShip;
                     currentPlayer.isPlayerTurn = true;
                 }
-                else if (cell == (char)GameIcons.Icons.emptyCell)
+                else if (cell == (char)GameIcons.emptyCell)
                 {
-                    cell = (char)GameIcons.Icons.damagedCell;
+                    cell = (char)GameIcons.damagedCell;
                     currentPlayer.isPlayerTurn = false;
                     otherPlayer.isPlayerTurn = true;
                 }
@@ -170,7 +171,7 @@ namespace SeaBattle
             int num = player.numberOfShips;
             if (key.Key == shootKey)
             {
-                if (player.field[player.xPos, player.yPos] == (char)GameIcons.Icons.ship)
+                if (player.field[player.xPos, player.yPos] == (char)GameIcons.ship)
                 {
                     num--;
                 }
@@ -203,13 +204,18 @@ namespace SeaBattle
             return (newX, newY);
         }
 
-        private bool CanMove(char[,] field, int newX, int newY)
+        private bool CanMove(char fieldXY)
         {
-            if (field[newX, newY] == (char)GameIcons.Icons.emptyCell || field[newX, newY] == (char)GameIcons.Icons.ship || field[newX, newY] == (char)GameIcons.Icons.damagedCell || field[newX, newY] == (char)GameIcons.Icons.destroyedShip)
+            switch (fieldXY)
             {
-                return true;
+                case (char)GameIcons.emptyCell:
+                case (char)GameIcons.ship:
+                case (char)GameIcons.damagedCell:
+                case (char)GameIcons.destroyedShip:
+                    return true;
+                default:
+                    return false;
             }
-            return false;
         }
 
         private void Move(Player player, int newX, int newY)
@@ -218,22 +224,31 @@ namespace SeaBattle
             player.yPos = newY;
         }
 
-        private bool IsGameEnd(int numberOfPlayer1Ships, int numberOfPlayer2Ships)
+        private bool IsRoundEnd(Player player1, Player player2)
         {
-            if (numberOfPlayer1Ships <= 0 || numberOfPlayer2Ships <= 0) return true;
+            if (player1.numberOfShips <= 0 
+                || player2.numberOfShips <= 0) 
+                return true;
             return false;
         }
 
-        private void EndGameMessage(int numberOfPlayer1Ships, int numberOfPlayer2Ships)
+        private void EndRoundLogic(Player player1, Player player2)
         {
-            if (numberOfPlayer1Ships <= 0)
+            if (player1.numberOfShips <= 0)
             {
-                Console.WriteLine("Player2 won!");
+                Console.WriteLine(player2.name + " won this round!");
+                player2.countOfWins++;
             }
-            else if (numberOfPlayer2Ships <= 0)
+            else if (player2.numberOfShips <= 0)
             {
-                Console.WriteLine("Player1 won!");
+                Console.WriteLine(player1.name + " won this round!");
+                player1.countOfWins++;
             }
+            Console.WriteLine();
+            Console.WriteLine("Count now:");
+            Console.WriteLine($"{player1.name}: {player1.countOfWins}");
+            Console.WriteLine($"{player2.name}: {player2.countOfWins}");
+            Console.WriteLine("Press any key, if you want continue...");
         }
     }
 }

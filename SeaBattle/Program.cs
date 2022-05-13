@@ -4,8 +4,8 @@
     {
         private static void Main(string[] args)
         {
-            Game game = new Game();
-            game.Play();
+            Lobby lobby = new Lobby();
+            lobby.StartGame();
         }
     }
 }
